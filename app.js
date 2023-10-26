@@ -13,7 +13,7 @@ var app = express();
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 const mongoDB =
-  '// mongodb+srv://admin:cR6w1P6HNrqj133y@cluster0.rxcjkfq.mongodb.net/local_library?retryWrites=true&w=majority';
+  'mongodb+srv://admin:cR6w1P6HNrqj133y@cluster0.rxcjkfq.mongodb.net/local_library?retryWrites=true&w=majority';
 
 main().catch((err) => console.log(err));
 async function main() {
