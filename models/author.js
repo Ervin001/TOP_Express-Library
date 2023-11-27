@@ -29,17 +29,24 @@ AuthorSchema.virtual('url').get(function () {
 });
 
 AuthorSchema.virtual('lifespan').get(function () {
-  // this won't work if there is no death
+  const birthFormatted = this.date_of_birth
+    ? DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED)
+    : '';
+
+  let deathFormatted = '';
+
+  if (this.date_of_death) {
+    deathFormatted = DateTime.fromJSDate(this.date_of_death).toLocaleString(
+      DateTime.DATE_MED
+    );
+  }
+
   if (this.date_of_birth && this.date_of_death) {
-    const birthFormatted = DateTime.fromJSDate(
-      this.date_of_birth
-    ).toLocaleString(DateTime.DATE_MED);
-    const deathFormatted = DateTime.fromJSDate(
-      this.date_of_death
-    ).toLocaleString(DateTime.DATE_MED);
     return `${birthFormatted} - ${deathFormatted}`;
+  } else if (this.date_of_birth) {
+    return `${birthFormatted}`;
   } else {
-    return ''; // Handle the case where date_of_birth or date_of_death is not set
+    return 'Not available';
   }
 });
 
