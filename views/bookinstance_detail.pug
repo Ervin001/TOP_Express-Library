@@ -3,6 +3,7 @@ extends layout
 block content
 
   h1 ID: #{bookinstance._id}
+  //- h1 ID: #{bookinstance.url}
 
 
   p #[strong Title:]
@@ -22,4 +23,8 @@ block content
 
   hr
   p 
-    a(href=bookinstance.url+'/delete') Delete book instance
+    form(method='POST' action=bookinstance.url + '/delete')
+      div.form-group
+        input#bookinstanceid.form-control(type='hidden', name='bookinstanceid', required='true', value=bookinstance._id )
+
+      button.btn.btn-primary(type='submit') Delete

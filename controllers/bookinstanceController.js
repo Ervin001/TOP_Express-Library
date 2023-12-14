@@ -99,7 +99,7 @@ exports.bookinstance_delete_get = asyncHandler(async (req, res, next) => {
   const book = await Book.findById(bookInstances.book).exec();
   const bookTitle = book.title;
 
-  res.render('bookinstance_delete', {
+  res.render('bookinstance_detail', {
     title: 'Delete BookInstance',
     bookinstance: bookInstances,
     bookTitle,
