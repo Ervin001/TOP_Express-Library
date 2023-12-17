@@ -122,10 +122,65 @@ exports.genre_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Genre update form on GET.
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre update GET');
+  // Get genres for form.
+  const genre = await Genre.findById(req.params.id).exec();
+
+  if (genre === null) {
+    // No results.
+    const err = new Error('Genre not found');
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render('genre_form', {
+    title: 'Update Genre',
+    genres: genre,
+  });
 });
 
 // Handle Genre update on POST.
-exports.genre_update_post = asyncHandler(async (req, res, next) => {
-  res.send('NOT IMPLEMENTED: Genre update POST');
-});
+exports.genre_update_post = [
+  (req, res, next) => {
+    if (!Array.isArray(req.body.genre)) {
+      req.body.genre = req.body.genre ? [req.body.genre] : [];
+    }
+    next();
+  },
+
+  //Validate and sanitize the genre field.
+  body('name').trim().isLength({ min: 1 }).escape(),
+
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    // Create a genre object with escaped and trimmed data and old ID
+    const genre = new Genre({
+      name: req.body.name,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitized values/error messages.
+
+      // Get genres for form.
+      const allGenres = await Genre.findById(req.params.id).exec();
+      // const allGenres = await Genre.find().sort({ name: 1 }).exec();
+
+      res.render('genre_form', {
+        title: 'Updated Genre',
+        genres: allGenres,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      // Data from form is valid. Update the record.
+      const updatedGenre = await Genre.findByIdAndUpdate(
+        req.params.id,
+        genre,
+        {}
+      );
+      // Successful - redirect to genre detail page.
+      res.redirect(updatedGenre.url);
+    }
+  }),
+];
