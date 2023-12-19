@@ -94,6 +94,7 @@ exports.bookinstance_create_post = [
 exports.bookinstance_delete_get = asyncHandler(async (req, res, next) => {
   // Get details of bookinstance.
   const bookInstances = await BookInstance.findById(req.params.id).exec();
+  const allBooks = await Book.find({}, 'title').sort({ title: 1 }).exec();
   // Get title of book.
   const book = await Book.findById(bookInstances.book).exec();
   const bookTitle = book.title;
@@ -101,7 +102,7 @@ exports.bookinstance_delete_get = asyncHandler(async (req, res, next) => {
   res.render('bookinstance_form', {
     title: 'Delete BookInstance',
     bookinstance: bookInstances,
-    bookTitle,
+    book_list: allBooks,
   });
 });
 
